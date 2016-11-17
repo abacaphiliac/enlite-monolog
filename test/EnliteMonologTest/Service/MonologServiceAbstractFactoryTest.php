@@ -7,8 +7,12 @@ namespace EnliteMonologTest\Service;
 
 
 use EnliteMonolog\Service\MonologServiceAbstractFactory;
+use Interop\Container\ContainerInterface;
 use Zend\ServiceManager\ServiceManager;
 
+/**
+ * @covers \EnliteMonolog\Service\MonologServiceAbstractFactory
+ */
 class MonologServiceAbstractFactoryTest extends \PHPUnit_Framework_TestCase
 {
 
@@ -76,9 +80,52 @@ class MonologServiceAbstractFactoryTest extends \PHPUnit_Framework_TestCase
             )
         );
 
-        $factory->createServiceWithName($serviceLocator, 'default', 'default');
+        $actual = $factory->createServiceWithName($serviceLocator, 'default', 'default');
 
+        self::assertInstanceOf('\Psr\Log\LoggerInterface', $actual);
     }
 
+    public function testCanCreate()
+    {
+        $serviceLocator = new ServiceManager();
+        if (!(interface_exists('\Interop\Container\ContainerInterface')
+            && $serviceLocator instanceof ContainerInterface)) {
+            self::markTestSkipped('Upgrade dependencies to execute this test.');
+        }
 
+        $factory = new MonologServiceAbstractFactory();
+        $serviceLocator->setService(
+            'config',
+            array(
+                'EnliteMonolog' => array(
+                    'default' => array()
+                )
+            )
+        );
+        $this->assertTrue($factory->canCreate($serviceLocator, 'default'));
+        $this->assertFalse($factory->canCreate($serviceLocator, 'test'));
+    }
+
+    public function testInvoke()
+    {
+        $serviceLocator = new ServiceManager();
+        if (!(interface_exists('\Interop\Container\ContainerInterface')
+            && $serviceLocator instanceof ContainerInterface)) {
+            self::markTestSkipped('Upgrade dependencies to execute this test.');
+        }
+
+        $factory = new MonologServiceAbstractFactory();
+        $serviceLocator->setService(
+            'config',
+            array(
+                 'EnliteMonolog' => array(
+                     'default' => array()
+                 )
+            )
+        );
+
+        $actual = $factory($serviceLocator, 'default');
+
+        self::assertInstanceOf('\Psr\Log\LoggerInterface', $actual);
+    }
 }

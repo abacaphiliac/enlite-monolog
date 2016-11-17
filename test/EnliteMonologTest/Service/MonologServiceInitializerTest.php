@@ -12,6 +12,9 @@ use Zend\Mvc\Service\ServiceManagerConfig;
 use Zend\ServiceManager\Config;
 use Zend\ServiceManager\ServiceManager;
 
+/**
+ * @covers \EnliteMonolog\Service\MonologServiceInitializer
+ */
 class MonologServiceInitializerTest extends \PHPUnit_Framework_TestCase
 {
     public function testInitialize()

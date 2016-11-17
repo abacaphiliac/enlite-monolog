@@ -8,9 +8,13 @@ namespace EnliteMonologTest\Service;
 
 use EnliteMonolog\Service\MonologOptions;
 use EnliteMonolog\Service\MonologServiceFactory;
+use Interop\Container\ContainerInterface;
 use Monolog\Formatter\LineFormatter;
 use Zend\ServiceManager\ServiceManager;
 
+/**
+ * @covers \EnliteMonolog\Service\MonologServiceFactory
+ */
 class MonologServiceFactoryTest extends \PHPUnit_Framework_TestCase
 {
 
@@ -159,7 +163,10 @@ class MonologServiceFactoryTest extends \PHPUnit_Framework_TestCase
     public function testCreateFormatterFromServiceName()
     {
         $serviceManager = new ServiceManager();
-        $serviceManager->setService('MyFormatter', $expected = $this->getMock('\Monolog\Formatter\FormatterInterface'));
+        $serviceManager->setService(
+            'MyFormatter',
+            $expected = $this->getMockBuilder('\Monolog\Formatter\FormatterInterface')->getMock()
+        );
 
         $factory = new MonologServiceFactory();
 
@@ -321,5 +328,23 @@ class MonologServiceFactoryTest extends \PHPUnit_Framework_TestCase
         $this->assertInstanceOf('Monolog\Handler\NullHandler', $handler2);
 
         self::assertTrue($handler->hasErrorRecords());
+    }
+
+    public function testInvoke()
+    {
+        $serviceLocator = new ServiceManager();
+        if (!(interface_exists('\Interop\Container\ContainerInterface')
+            && $serviceLocator instanceof ContainerInterface)) {
+            self::markTestSkipped('Upgrade dependencies to execute this test.');
+        }
+
+        $config = array('name' => 'test', 'handlers' => array(array('name' => 'Monolog\Handler\TestHandler')));
+
+        $serviceLocator->setService('EnliteMonologOptions', new MonologOptions($config));
+
+        $factory = new MonologServiceFactory();
+
+        $actual = $factory($serviceLocator, 'default');
+        $this->assertInstanceOf('Monolog\Logger', $actual);
     }
 }
