@@ -36,6 +36,7 @@ script:
   - if [ "$TRAVIS_PHP_VERSION" == "5.3" ]; then composer lint:syntax-php53; else composer lint:syntax; fi
   - composer lint:style
   - composer test:units
+  - if [ "$TRAVIS_PHP_VERSION" >= "5.3" ]; then composer test:integration-zf2; fi
 
 notifications:
   email: false

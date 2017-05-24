@@ -1,0 +1,15 @@
+<phpunit bootstrap="vendor/autoload.php"
+         beStrictAboutTestsThatDoNotTestAnything="true"
+         beStrictAboutOutputDuringTests="true"
+         disallowChangesToGlobalState="true"
+         verbose="true"
+         colors="true">
+    <php>
+        <ini name="display_errors" value="1" />
+    </php>
+    <testsuites>
+        <testsuite name="ZF2 Integration Test Suite">
+            <directory>test</directory>
+        </testsuite>
+    </testsuites>
+</phpunit>

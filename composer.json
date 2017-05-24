@@ -41,11 +41,12 @@
         }
     },
     "scripts": {
-        "lint:beautify": "vendor/bin/phpcbf --standard=PSR2 --extensions=php --severity=1 config/ src/ test/ -v",
-        "lint:style": "vendor/bin/phpcs --standard=PSR2 --extensions=php --severity=1 config/ src/ test/ -v",
+        "lint:beautify": "vendor/bin/phpcbf --standard=PSR2 --extensions=php --severity=1 config/ src/ test/EnliteMonologTest -v",
+        "lint:style": "vendor/bin/phpcs --standard=PSR2 --extensions=php --severity=1 config/ src/ test/EnliteMonologTest -v",
         "lint:syntax": "vendor/bin/parallel-lint config/ src/ test/",
         "lint:syntax-php53": "vendor/bin/parallel-lint --exclude src/EnliteMonolog/Service/MonologServiceAwareTrait.php config/ src/ test/",
         "test:coverage": "vendor/bin/phpunit --coverage-text",
+        "test:integration-zf2": "( cd test/ZF2IntegrationTest ; composer install ; composer configure ; composer test )",
         "test:units": "vendor/bin/phpunit"
     }
 }
