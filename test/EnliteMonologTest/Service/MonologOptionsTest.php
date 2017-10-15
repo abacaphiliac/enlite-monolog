@@ -4,6 +4,8 @@ namespace EnliteMonologTest\Service;
 
 use EnliteMonolog\Service\MonologOptions;
 use PHPUnit\Framework\TestCase;
+use Psr\Log\LogLevel;
+use const E_ERROR;
 
 /**
  * @covers \EnliteMonolog\Service\MonologOptions
@@ -66,5 +68,36 @@ class MonologOptionsTest extends TestCase
 
         self::assertInternalType('array', $this->sut->getProcessors());
         self::assertContains($expected, $this->sut->getProcessors());
+    }
+
+    public function testErrorHandlerOptions()
+    {
+        $options = new MonologOptions();
+
+        self::assertNull($options->getErrorHandlerOptions());
+
+        $options->setErrorHandlerOptions([
+        ]);
+
+        self::assertNull($options->getErrorHandlerOptions()->getErrorLevelMap());
+        self::assertNull($options->getErrorHandlerOptions()->getExceptionLevel());
+        self::assertNull($options->getErrorHandlerOptions()->getExceptionLevelMap());
+        self::assertNull($options->getErrorHandlerOptions()->getFatalLevel());
+
+        $options->setErrorHandlerOptions([
+            'error_level_map' => [
+                E_ERROR => LogLevel::ERROR,
+            ],
+            'exception_level' => LogLevel::ERROR,
+            'exception_level_map' => [
+                E_ERROR => LogLevel::ERROR,
+            ],
+            'fatal_level' => LogLevel::ERROR,
+        ]);
+
+        self::assertSame([E_ERROR => LogLevel::ERROR], $options->getErrorHandlerOptions()->getErrorLevelMap());
+        self::assertSame(LogLevel::ERROR, $options->getErrorHandlerOptions()->getExceptionLevel());
+        self::assertSame([E_ERROR => LogLevel::ERROR], $options->getErrorHandlerOptions()->getExceptionLevelMap());
+        self::assertSame(LogLevel::ERROR, $options->getErrorHandlerOptions()->getFatalLevel());
     }
 }

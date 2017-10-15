@@ -30,6 +30,11 @@ class MonologOptions extends AbstractOptions
     protected $processors = array();
 
     /**
+     * @var ErrorHandlerOptions | null
+     */
+    private $errorHandlerOptions = null;
+
+    /**
      * @param string $name
      */
     public function setName($name)
@@ -75,5 +80,15 @@ class MonologOptions extends AbstractOptions
     public function getProcessors()
     {
         return $this->processors;
+    }
+
+    public function getErrorHandlerOptions(): ?ErrorHandlerOptions
+    {
+        return $this->errorHandlerOptions;
+    }
+
+    public function setErrorHandlerOptions(array $errorHandlerOptions): void
+    {
+        $this->errorHandlerOptions = new ErrorHandlerOptions($errorHandlerOptions);
     }
 }

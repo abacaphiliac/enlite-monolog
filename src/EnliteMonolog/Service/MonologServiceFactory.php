@@ -74,6 +74,11 @@ class MonologServiceFactory implements FactoryInterface
             $logger->pushProcessor($this->createProcessor($container, $processor));
         }
 
+        $errorHandlerOptions = $options->getErrorHandlerOptions();
+        if ($errorHandlerOptions) {
+            $errorHandlerOptions->registerLoggerAsErrorHandler($logger);
+        }
+
         return $logger;
     }
 

@@ -16,8 +16,12 @@ use Monolog\Handler\TestHandler;
 use Monolog\Logger;
 use Monolog\Processor\MemoryUsageProcessor;
 use PHPUnit\Framework\TestCase;
+use Psr\Log\LogLevel;
 use stdClass;
+use Zend\ServiceManager\Config;
 use Zend\ServiceManager\ServiceManager;
+use function basename;
+use const E_USER_ERROR;
 
 /**
  * @covers \EnliteMonolog\Service\MonologServiceFactory
@@ -675,5 +679,51 @@ class MonologServiceFactoryTest extends TestCase
         ));
 
         self::assertInstanceOf(stdClass::class, $result);
+    }
+
+    public function testRegistersErrorHandler()
+    {
+        if (!class_exists('\Monolog\ErrorHandler')) {
+            self::markTestSkipped('Class "\Monolog\ErrorHandler" is required.');
+        }
+
+        $oldErrorHandler = set_error_handler($prevHandler = function () {
+        });
+
+        $sut = new MonologServiceFactory();
+
+        $testHandler = new TestHandler();
+
+        $services = new ServiceManager();
+        (new Config([
+            'services' => [
+                TestHandler::class => $testHandler,
+            ],
+        ]))->configureServiceManager($services);
+
+        $logger = $sut->createLogger($services, new MonologOptions([
+            'name' => basename(__FILE__),
+            'error_handler_options' => [
+                'error_level_map' => [
+                    E_USER_ERROR => LogLevel::ERROR,
+                ],
+            ],
+            'handlers' => [
+                TestHandler::class,
+            ],
+        ]));
+
+        self::assertInstanceOf(Logger::class, $logger);
+
+        self::assertFalse($testHandler->hasErrorRecords());
+
+        try {
+            trigger_error('whoops', E_USER_ERROR);
+        } finally {
+            // restore previous handler
+            set_error_handler($oldErrorHandler);
+        }
+
+        self::assertTrue($testHandler->hasError('E_USER_ERROR: whoops'));
     }
 }
