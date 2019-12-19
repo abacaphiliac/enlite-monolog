@@ -3,11 +3,12 @@
 namespace EnliteMonologTest\Service;
 
 use EnliteMonolog\Service\MonologOptions;
+use PHPUnit\Framework\TestCase;
 
 /**
  * @covers \EnliteMonolog\Service\MonologOptions
  */
-class MonologOptionsTest extends \PHPUnit_Framework_TestCase
+class MonologOptionsTest extends TestCase
 {
     /** @var MonologOptions */
     private $sut;

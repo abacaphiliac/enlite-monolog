@@ -9,12 +9,14 @@ use EnliteMonolog\Service\MonologOptions;
 use EnliteMonolog\Service\MonologServiceFactory;
 use Monolog\Formatter\FormatterInterface;
 use Monolog\Formatter\LineFormatter;
+use Monolog\Handler\TestHandler;
+use PHPUnit\Framework\TestCase;
 use Zend\ServiceManager\ServiceManager;
 
 /**
  * @covers \EnliteMonolog\Service\MonologServiceFactory
  */
-class MonologServiceFactoryTest extends \PHPUnit_Framework_TestCase
+class MonologServiceFactoryTest extends TestCase
 {
 
     public function testCreateService()
@@ -418,14 +420,14 @@ class MonologServiceFactoryTest extends \PHPUnit_Framework_TestCase
         $factory = new MonologServiceFactory();
 
         $actual = $factory->createHandler($serviceManager, new MonologOptions(), array(
-            'name' => '\Monolog\Handler\NullHandler',
+            'name' => TestHandler::class,
             'formatter' => array(
-                'name' => '\Monolog\Formatter\LineFormatter',
+                'name' => LineFormatter::class,
             ),
         ));
 
-        self::assertInstanceOf('\Monolog\Handler\NullHandler', $actual);
-        self::assertInstanceOf('\Monolog\Formatter\LineFormatter', $actual->getFormatter());
+        self::assertInstanceOf(TestHandler::class, $actual);
+        self::assertInstanceOf(LineFormatter::class, $actual->getFormatter());
     }
 
     public function testCreateHandlerWithRandomOrderArgs()
@@ -472,7 +474,7 @@ class MonologServiceFactoryTest extends \PHPUnit_Framework_TestCase
 
         $service = $factory->createService($serviceManager);
 
-        $service->addError('HandleThis!');
+        $service->error('HandleThis!');
 
         $handler1 = $service->popHandler();
         $this->assertInstanceOf('Monolog\Handler\TestHandler', $handler1);
@@ -494,7 +496,7 @@ class MonologServiceFactoryTest extends \PHPUnit_Framework_TestCase
 
         $factory = new MonologServiceFactory();
         $handler = $factory->createHandler($serviceManager, $monologOptions, array(
-            'name' => '\Monolog\Handler\NullHandler',
+            'name' => TestHandler::class,
         ));
 
         $formatter = $handler->getFormatter();
@@ -517,7 +519,7 @@ class MonologServiceFactoryTest extends \PHPUnit_Framework_TestCase
             'context' => array(),
         ));
 
-        self::assertContains('[2016-01-01 00:00:00]', $line);
+        self::assertContains('[2016-01-01T00:00:00+00:00]', $line);
     }
 
     public function testInvoke()

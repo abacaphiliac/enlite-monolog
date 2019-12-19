@@ -9,7 +9,7 @@
     }
   },
   "require-dev": {
-    "monolog/monolog": "^1.0.2",
+    "monolog/monolog": "^2",
     "zendframework/zendframework": "^3.0",
     "phpunit/phpunit": "^5.0"
   }

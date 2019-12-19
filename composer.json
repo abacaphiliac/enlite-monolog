@@ -19,7 +19,8 @@
         }
     },
     "require": {
-        "monolog/monolog": "^1.0.2",
+        "php": "^7.2",
+        "monolog/monolog": "^2",
         "zendframework/zend-modulemanager": "^2",
         "zendframework/zend-stdlib": "^2 || ^3",
         "zendframework/zend-servicemanager": "^2 || ^3"
@@ -27,9 +28,9 @@
     "require-dev": {
         "container-interop/container-interop": "^1.0",
         "jakub-onderka/php-parallel-lint": "^0.9",
-        "johnkary/phpunit-speedtrap": "^1.0",
+        "johnkary/phpunit-speedtrap": "^3.1",
         "squizlabs/php_codesniffer": "^2.9",
-        "phpunit/phpunit": "^5|^4.8"
+        "phpunit/phpunit": "^7.5.15"
     },
     "autoload": {
         "psr-4": {
@@ -47,7 +48,6 @@
         "lint:syntax": "vendor/bin/parallel-lint --exclude vendor --exclude test/ZF2/vendor --exclude test/ZF3/vendor .",
         "lint:syntax-php53": "vendor/bin/parallel-lint --exclude src/EnliteMonolog/Service/MonologServiceAwareTrait.php config/ src/ test/",
         "test:coverage": "vendor/bin/phpunit --coverage-text",
-        "test:mutations": "vendor/bin/humbug && cat humbuglog.txt",
         "test:units": "vendor/bin/phpunit"
     }
 }
