@@ -5,6 +5,7 @@ namespace EnliteMonologTest\Service;
 use EnliteMonolog\Service\MonologServiceAwareTrait;
 use Monolog\Logger;
 use PHPUnit\Framework\TestCase;
+use RuntimeException;
 use Zend\ServiceManager\ServiceManager;
 
 /**
@@ -89,9 +90,6 @@ class MonologServiceAwareTraitTest extends TestCase
         self::assertSame($logger, $sut->getMonologService());
     }
 
-    /**
-     * @expectedException \RuntimeException
-     */
     public function testNotGetMonologService()
     {
         $sut = new TraitMock5();
@@ -102,6 +100,8 @@ class MonologServiceAwareTraitTest extends TestCase
         $services->setService('EnliteMonologService', $logger);
 
         $sut->setServiceLocator($services);
+
+        self::expectException(RuntimeException::class);
 
         $sut->getMonologService();
     }
